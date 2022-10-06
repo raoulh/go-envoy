@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+
 	"github.com/cloudkucooland/go-envoy"
-	// "strconv"
 )
 
 func main() {
-	var command, host string
+	var command string
 
 	flag.Parse()
 	args := flag.Args()
@@ -20,13 +20,38 @@ func main() {
 	if argc >= 1 {
 		command = args[0]
 	}
-	if argc > 1 {
-		host = args[1]
+
+	e := envoy.New("192.168.0.134", "raoul-pubs@calaos.fr", "wHM9K*mQoPZr", "122233103807")
+
+	if e.JWTToken == "" {
+		err := e.Login()
+		if err != nil {
+			panic(err)
+		}
+
+		err = e.GetToken()
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	var e *envoy.Envoy
+	err := e.GetLocalSessionCookie()
+	if err != nil {
+		err := e.Login()
+		if err != nil {
+			panic(err)
+		}
 
-	e = envoy.New(host)
+		err = e.GetToken()
+		if err != nil {
+			panic(err)
+		}
+
+		err = e.GetLocalSessionCookie()
+		if err != nil {
+			panic(err)
+		}
+	}
 
 	switch command {
 	case "prod":
@@ -80,7 +105,9 @@ func main() {
 		} */
 		fmt.Printf("working on it...\n")
 	default:
-                fmt.Println("usage: envoy <command> <IQ IP address/hostname>")
+		fmt.Println("usage: envoy <command> <IQ IP address/hostname>")
 		fmt.Println("Valid commands: prod, home, inventory, stream, now, today, info")
 	}
+
+	e.Close()
 }

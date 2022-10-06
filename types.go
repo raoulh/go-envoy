@@ -2,6 +2,19 @@ package envoy
 
 import "encoding/xml"
 
+type loginManagerToken struct {
+	Message      string `json:"message"`
+	SessionId    string `json:"session_id"`
+	ManagerToken string `json:"manager_token"`
+	IsConsumer   bool   `json:"is_consumer"`
+}
+
+type loginToken struct {
+	GenerationTime uint   `json:"generation_time"`
+	Token          string `json:"token"`
+	ExpiresAt      uint   `json:"expires_at"`
+}
+
 // from the production endpoint
 type production struct {
 	Production  []entry `json:"production"`
