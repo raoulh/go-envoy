@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/cloudkucooland/go-envoy"
+	"github.com/raoulh/go-envoy"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 		command = args[0]
 	}
 
-	e := envoy.New("192.168.0.134", "raoul-pubs@calaos.fr", "wHM9K*mQoPZr", "122233103807")
+	e := envoy.New("192.168.0.134", "raoul-pubs@calaos.fr", "xxxxxx", "122233103807")
 
 	if e.JWTToken == "" {
 		err := e.Login()

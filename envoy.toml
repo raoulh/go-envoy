@@ -1,0 +1,13 @@
+[general]
+#Port to listen for Web
+port = 8000
+address = "0.0.0.0"
+
+#path to the cache dir (containing tokens/auth...)
+cache = "cache"
+
+[log]
+# default is used for all unspecified module level
+# can be any of: trace, debug, info, warning, error, fatal, panic
+default = "info"
+app = "info"
