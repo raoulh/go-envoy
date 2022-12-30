@@ -29,6 +29,10 @@ func NewLogger(domain string) *logrus.Entry {
 	return Logger.WithField("domain", domain)
 }
 
+func SetFilterFormater(ff *FilterFormatter) {
+	Logger.Formatter = ff
+}
+
 // Infof outputs info log
 func Infof(domain string, format string, v ...interface{}) {
 	Logger.WithField("domain", domain).Infof(format, v...)

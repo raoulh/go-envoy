@@ -25,7 +25,7 @@ func Discover() (string, error) {
 
 	if err := dnssd.LookupType(ctx, "_enphase-envoy._tcp.local.", found, reject); err != nil {
 		if err.Error() != "context canceled" {
-			elogger.Printf("discovery: %v\n", err)
+			logging.Debugf("discovery: %v\n", err)
 			return "", err
 		}
 	}
@@ -33,5 +33,5 @@ func Discover() (string, error) {
 }
 
 func reject(e dnssd.BrowseEntry) {
-	elogger.Printf("dnssd-lookup: %+v", e)
+	logging.Debugf("dnssd-lookup: %+v", e)
 }

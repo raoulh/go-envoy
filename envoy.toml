@@ -11,3 +11,4 @@ cache = "cache"
 # can be any of: trace, debug, info, warning, error, fatal, panic
 default = "info"
 app = "info"
+envoy = "debug"

@@ -22,7 +22,7 @@ var (
 	defaultConfig map[string]interface{} = map[string]interface{}{
 		"general.port":    8000,
 		"general.address": "",
-		"log.default":     "info",
+		"log.default":     "trace",
 	}
 
 	//a dedicated logger must be used here to avoid conflict

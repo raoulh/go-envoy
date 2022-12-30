@@ -6,7 +6,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -17,24 +16,28 @@ import (
 	"golang.org/x/net/publicsuffix"
 
 	"time"
+
+	logger "github.com/raoulh/go-envoy/internal/log"
+	"github.com/sirupsen/logrus"
 )
 
-var elogger envoylogger = log.Default()
+var (
+	logging *logrus.Entry
+)
 
-type envoylogger interface {
-	Println(...interface{})
-	Printf(string, ...interface{})
+func init() {
+	logging = logger.NewLogger("envoy")
 }
 
-func SetLogger(l envoylogger) {
-	elogger = l
+func SetLoggerLevel(l logrus.Level) {
+	logging.Logger.SetLevel(l)
 }
 
 type Envoy struct {
-	Host             string `json:"-"`
-	Username         string `json:"-"`
-	Password         string `json:"-"`
-	EnvoySerial      string `json:"-"`
+	Host             string `json:"host"`
+	Username         string `json:"username"`
+	Password         string `json:"password"`
+	EnvoySerial      string `json:"serial"`
 	JWTToken         string `json:"jwt_token"`
 	ManagerSessionId string `json:"-"`
 	LocalSessionId   string `json:"-"`
@@ -49,23 +52,29 @@ const (
 	kEnvoyProductionUrl = "https://%s/production.json?details=1"
 )
 
-func New(host, username, password, serial string) *Envoy {
-	// if no host set, try discovery
-	if host == "" {
-		host, _ = Discover()
-	}
-
+func New() *Envoy {
 	e := Envoy{}
 	e.loadFromCache()
-
-	e.Host = host
-	e.Username = username
-	e.Password = password
-	e.EnvoySerial = serial
 
 	e.client = newClient()
 
 	return &e
+}
+
+func SetConfig(host, user, pass, serial string) {
+	e := Envoy{}
+
+	if host == "" {
+		host, _ = Discover()
+		logging.Debugln("Found envoy host:", host)
+	}
+
+	e.Host = host
+	e.Username = user
+	e.Password = pass
+	e.EnvoySerial = serial
+
+	e.saveToCache()
 }
 
 func (e *Envoy) Rediscover() error {
@@ -88,7 +97,7 @@ func (e *Envoy) loadFromCache() {
 
 	err = json.Unmarshal(b, e)
 	if err != nil {
-		log.Printf("unmarshal cache file failed: %s", err)
+		logging.Debugf("unmarshal cache file failed: %s", err)
 	}
 }
 
@@ -97,7 +106,7 @@ func (e *Envoy) saveToCache() {
 
 	b, err := json.Marshal(e)
 	if err != nil {
-		log.Printf("marshal cache file failed: %s", err)
+		logging.Debugf("marshal cache file failed: %s", err)
 	}
 
 	err = os.WriteFile(fmt.Sprintf("%s/envoy.cache", path), b, os.ModePerm)
@@ -122,16 +131,16 @@ func getCachePath() string {
 		path = "./"
 	}
 
-	err := os.MkdirAll(path, os.ModeDir)
+	err := os.MkdirAll(path, os.ModePerm)
 	if err != nil {
-		log.Fatal(err)
+		logging.Errorln(err)
 	}
 
 	return path
 }
 
 func (e *Envoy) Login() (err error) {
-	log.Println("Login")
+	logging.Debug("Login")
 
 	u := kEnlightenLoginUrl
 
@@ -163,7 +172,7 @@ func (e *Envoy) Login() (err error) {
 	var d loginManagerToken
 	err = json.Unmarshal(body, &d)
 	if err != nil {
-		log.Printf("login failure:\n%s", body)
+		logging.Debugf("login failure:\n%s", body)
 		return
 	}
 
@@ -177,7 +186,7 @@ func (e *Envoy) Login() (err error) {
 }
 
 func (e *Envoy) GetToken() (err error) {
-	log.Println("GetToken")
+	logging.Debugf("GetToken")
 
 	u := fmt.Sprintf(kEnlightenTokenUrl, e.EnvoySerial)
 	uri, err := url.Parse(u)
@@ -219,7 +228,7 @@ func (e *Envoy) GetToken() (err error) {
 }
 
 func (e *Envoy) GetLocalSessionCookie() (err error) {
-	log.Println("GetLocalSessionCookie")
+	logging.Debugf("GetLocalSessionCookie")
 
 	u := fmt.Sprintf(kEnvoyCheckTokenUrl, e.Host)
 	uri, err := url.Parse(u)
@@ -242,6 +251,10 @@ func (e *Envoy) GetLocalSessionCookie() (err error) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return
+	}
+
+	if resp.StatusCode > 400 {
+		return fmt.Errorf("auth required")
 	}
 
 	if strings.Contains(string(body), "Valid token") {
@@ -471,7 +484,7 @@ func (e *Envoy) Inverters() (*[]Inverter, error) {
 	var i []Inverter
 	err = json.Unmarshal(body, &i)
 	if err != nil {
-		elogger.Println(string(body))
+		logging.Debugf(string(body))
 		return nil, err
 	}
 	return &i, nil
@@ -503,7 +516,7 @@ func newClient() *http.Client {
 
 	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	if err != nil {
-		log.Fatal(err)
+		logging.Debug(err)
 	}
 
 	client := &http.Client{
