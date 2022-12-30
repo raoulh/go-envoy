@@ -268,7 +268,7 @@ func (e *Envoy) GetLocalSessionCookie() (err error) {
 	return
 }
 
-func (e *Envoy) Production() (*production, error) {
+func (e *Envoy) Production() (*Production, error) {
 	u := fmt.Sprintf(kEnvoyProductionUrl, e.Host)
 
 	uri, err := url.Parse(u)
@@ -293,7 +293,7 @@ func (e *Envoy) Production() (*production, error) {
 		return nil, err
 	}
 
-	var d production
+	var d Production
 	err = json.Unmarshal(body, &d)
 	if err != nil {
 		return nil, err
@@ -302,7 +302,7 @@ func (e *Envoy) Production() (*production, error) {
 	return &d, nil
 }
 
-func (e *Envoy) Home() (*home, error) {
+func (e *Envoy) Home() (*Home, error) {
 	u := fmt.Sprintf("http://%s/home.json", e.Host)
 
 	uri, err := url.Parse(u)
@@ -327,7 +327,7 @@ func (e *Envoy) Home() (*home, error) {
 		return nil, err
 	}
 
-	var d home
+	var d Home
 	err = json.Unmarshal(body, &d)
 	if err != nil {
 		return nil, err
@@ -337,7 +337,7 @@ func (e *Envoy) Home() (*home, error) {
 }
 
 // http://envoy.local/inventory.json?deleted=1
-func (e *Envoy) Inventory() (*[]inventory, error) {
+func (e *Envoy) Inventory() (*[]Inventory, error) {
 	u := fmt.Sprintf("http://%s/inventory.json", e.Host)
 
 	uri, err := url.Parse(u)
@@ -362,7 +362,7 @@ func (e *Envoy) Inventory() (*[]inventory, error) {
 		return nil, err
 	}
 
-	var d []inventory
+	var d []Inventory
 	err = json.Unmarshal(body, &d)
 	if err != nil {
 		return nil, err

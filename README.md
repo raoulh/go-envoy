@@ -3,7 +3,7 @@ Pull data from an Enphase IQ Envoy or IQ Combiner. It also provide a simple web 
 you use the data from any home automation software of scripts.
 
 The main issue was to query the Enphase Envoy using their new API. The direct polling of data from the local
-network was shut off with one of the latest 2022 fw update. From now on, you need to do multiple query to their
+network was shut off with one of the latest 2022 fw update. From now on, you need to do multiple queries to their
 cloud first to get some token. Once you have a valid token you can query the local envoy for data.
 This new way of doing is really cumbersome for home automation system, as they do not have the hability to
 do so complicated queries to get data.

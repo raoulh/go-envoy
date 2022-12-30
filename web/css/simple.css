@@ -622,3 +622,46 @@
   progress:indeterminate::-moz-progress-bar {
     background-color: var(--accent-bg);
   }
+
+  .app {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    width: 550px;
+    height: 300px;
+    transform: translate(-50%, -50%);
+  }
+
+  .widget {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .widget li {
+    width: 180px;
+    height: 148px;
+    padding: 0px 0px;
+    margin: 0.5px;
+    float: left;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 64, 58, 0.15);
+  }
+
+  .widget li h2 {
+    font-size: 11px;
+    opacity: 0.8;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .widget li .val {
+    font-size: 50px;
+    font-weight: 100;
+    color: #343a42;
+  }
+
+  .widget li .val small {
+    font-size: 30px;
+  }

@@ -16,6 +16,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/valyala/fasthttp v1.43.0 // indirect
 	github.com/xinsnake/go-http-digest-auth-client v0.6.0
+	golang.org/x/net v0.0.0-20220906165146-f3363e06e74c // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/tools v0.1.11 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect

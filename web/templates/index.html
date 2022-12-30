@@ -15,7 +15,34 @@
 	</header>
 
 	<main>
-		<p>TODO</p>
+		<div class="app">
+			<ul class="widget">
+				<li>
+					<h2>Production Now</h2>
+					<div class="val"><span id="prod_now">{{ .ProdNow }}</span><small>W</small></div>
+				</li>
+				<li>
+					<h2>Consumption Now</h2>
+					<div class="val"><span id="conso_now">{{ .ConsoNow }}</span><small>W</small></div>
+				</li>
+				<li>
+					<h2>Net Import</h2>
+					<div class="val"><span id="net_now">{{ .NetNow }}</span><small>w</small></div>
+				</li>
+				<li>
+					<h2>Production today</h2>
+					<div class="val"><span id="prod_today">{{ .ProdToday }}</span><small>kWh</small></div>
+				</li>
+				<li>
+					<h2>Consumption today</h2>
+					<div class="val"><span id="conso_today">{{ .ConsoToday }}</span><small>kWh</small></div>
+				</li>
+				<li>
+					<h2>Net Today</h2>
+					<div class="val"><span id="net_today">{{ .NetToday }}</span><small>kWh</small></div>
+				</li>
+			</ul>
+		</div>
 	</main>
 
 	<footer>

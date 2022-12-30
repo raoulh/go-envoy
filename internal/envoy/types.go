@@ -16,13 +16,13 @@ type loginToken struct {
 }
 
 // from the production endpoint
-type production struct {
-	Production  []entry `json:"production"`
-	Consumption []entry `json:"consumption"`
-	Storage     []entry `json:"storage"`
+type Production struct {
+	Production  []Entry `json:"production"`
+	Consumption []Entry `json:"consumption"`
+	Storage     []Entry `json:"storage"`
 }
 
-type entry struct {
+type Entry struct {
 	Type             string  `json:"type"`
 	ActiveCount      int     `json:"activeCount"`
 	MeasurementType  string  `json:"measurementType"`
@@ -44,10 +44,10 @@ type entry struct {
 	VarhLeadToday    float64 `json:"varhLeadToday,omitempty"`
 	VarhLagToday     float64 `json:"varhLagToday,omitempty"`
 	State            string  `json:"state,omitempty"`
-	Lines            []line  `json:"lines,omitempty"`
+	Lines            []Line  `json:"lines,omitempty"`
 }
 
-type line struct {
+type Line struct {
 	WNow             float64 `json:"wNow"`
 	WhLifetime       float64 `json:"whLifetime"`
 	VarhLeadLifetime float64 `json:"varhLeadLifetime"`
@@ -66,7 +66,7 @@ type line struct {
 }
 
 // http://envoy.local/home.json
-type home struct {
+type Home struct {
 	SoftwareBuildEpoch int     `json:"software_build_epoch"`
 	IsNonvoy           bool    `json:"is_nonvoy"`
 	DbSize             string  `json:"db_size"`
@@ -74,33 +74,33 @@ type home struct {
 	Timezone           string  `json:"timezone"`
 	CurrentDate        string  `json:"current_date"`
 	CurrentTime        string  `json:"current_time"`
-	Network            homenet `json:"network"`
+	Network            Homenet `json:"network"`
 	Tariff             string  `json:"tariff"`
 	Comm               struct {
 		Num   int        `json:"num"`
 		Level int        `json:"level"`
-		Pcu   homenumlev `json:"pcu"`
-		Acb   homenumlev `json:"acb"`
-		Nsrb  homenumlev `json:"nsrb"`
+		Pcu   Homenumlev `json:"pcu"`
+		Acb   Homenumlev `json:"acb"`
+		Nsrb  Homenumlev `json:"nsrb"`
 	} `json:"comm"`
 	Alerts       []interface{} `json:"alerts"` // dunno on this one yet
 	UpdateStatus string        `json:"update_status"`
 }
 
-type homenumlev struct {
+type Homenumlev struct {
 	Num   int `json:"num"`
 	Level int `json:"level"`
 }
 
-type homenet struct {
+type Homenet struct {
 	WebComm                 bool        `json:"web_comm"`
 	EverReportedToEnlighten bool        `json:"ever_reported_to_enlighten"`
 	LastEnlightenReportTime int         `json:"last_enlighten_report_time"`
 	PrimaryInterface        string      `json:"primary_interface"`
-	Interfaces              []homenetif `json:"interfaces"`
+	Interfaces              []Homenetif `json:"interfaces"`
 }
 
-type homenetif struct {
+type Homenetif struct {
 	SignalStrength    int    `json:"signal_strength"`
 	SignalStrengthMax int    `json:"signal_strength_max"`
 	Network           bool   `json:"network,omitempty"`
@@ -117,7 +117,7 @@ type homenetif struct {
 }
 
 // inventory
-type inventory struct {
+type Inventory struct {
 	Type    string `json:"type"`
 	Devices []struct {
 		PartNum        string   `json:"part_num"`
