@@ -1,0 +1,12 @@
+[Unit]
+Description=Envoy Backend
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/envoy_web -c /etc/envoy.toml
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -7,6 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	fiberLog "github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/template/html"
 
 	"github.com/raoulh/go-envoy/internal/config"
 	logger "github.com/raoulh/go-envoy/internal/log"
@@ -34,6 +35,8 @@ func init() {
 func NewApp() (a *AppServer, err error) {
 	logging.Infoln("Init server")
 
+	engine := html.New(config.Config.String("general.static")+"/templates", ".html")
+
 	a = &AppServer{
 		quitHeartbeat: make(chan interface{}),
 		appFiber: fiber.New(fiber.Config{
@@ -43,11 +46,15 @@ func NewApp() (a *AppServer, err error) {
 			DisableStartupMessage: true,
 			EnablePrintRoutes:     false,
 			BodyLimit:             maxFileSize,
+			Views:                 engine,
 		}),
 	}
 
 	a.appFiber.
 		Use(fiberLog.New(fiberLog.Config{}))
+
+	a.appFiber.Static("/js", config.Config.String("general.static")+"/js")
+	a.appFiber.Static("/css", config.Config.String("general.static")+"/css")
 
 	a.appFiber.Hooks().OnShutdown(func() error {
 		a.wgDone.Done()

@@ -22,6 +22,7 @@ func NewFilterFormatter() *FilterFormatter {
 			DisableTimestamp: true,
 			QuoteEmptyFields: true,
 		},
+		useConfig: true,
 	}
 }
 

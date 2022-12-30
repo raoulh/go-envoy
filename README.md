@@ -1,56 +1,78 @@
 # go-envoy
-Pull data from an Enphase IQ Envoy or IQ Combiner
+Pull data from an Enphase IQ Envoy or IQ Combiner. It also provide a simple web server with an API to let 
+you use the data from any home automation software of scripts.
 
-# This uses the local API, not the Cloud API, so you can poll as frequently as you like
-Only basic features will be supported
-* reading inventory
-* reading current consumption/production/storage data
+The main issue was to query the Enphase Envoy using their new API. The direct polling of data from the local
+network was shut off with one of the latest 2022 fw update. From now on, you need to do multiple query to their
+cloud first to get some token. Once you have a valid token you can query the local envoy for data.
+This new way of doing is really cumbersome for home automation system, as they do not have the hability to
+do so complicated queries to get data.
+
+This project contains a simple CLI tool and a daemon. The CLI tool can query the envoy and then caches the token
+to be able to use it the next time. The web daemon should run as a system service, it caches the data and polls
+itself for the token/data automatically. You can then use any basic tool to query the endpoints and get data.
+
+Based on https://github.com/cloudkucooland/go-envoy
+Heavily modified.
 
 # Usage
-First argument is the command you want to run, second argument is the IP address or hostname of your IQ.
-If no IP/hostname is passed in the application will attempt to find the IQ on your network.
+
+First you need to set your credential and envoy serial number.
+
 ```
-% envoy <command> <envoy IP/hostname>
+> envoy config set -h=192.168.0.134 -u=xxxx@email.com -s=1234567890 -p=my_super_password
 ```
 
-## Examples
-* see current production / max, consumption, net statistics
-* max is calculated based on the sum of the highest production each panel has produced since last IQ reboot
+Then use any of the CLI to query. The CLI tool can print as raw json too.
+
 ```
-% envoy now
-Production: 6698.88W / 8808W	Consumption: 722.03W	Net: -5976.85W
-```
-Or pass in the IP of your IQ
-```
-% envoy now 192.168.0.123
-Production: 6698.88W / 8808W    Consumption: 722.03W    Net: -5976.85W
+Usage: envoy [-v] COMMAND [arg...]
+
+Envoy CLI App
+                  
+Options:          
+  -v, --verbose   Verbose debug mode
+                  
+Commands:         
+  config          manage account
+  now             display current production
+  today           display stats for today production
+  info            display info about gateway
+  production      display raw json production
+  inventory       display raw json inventory
+  inverters       display raw json inverters
+  home            display raw json /home.json
+                  
+Run 'envoy COMMAND --help' for more information on a command.
 ```
 
-* see today's totals
 ```
-% envoy today
-Production: 13.55kWh	Consumption: 8.58kWh	Net: 0.00kWh
-```
-
-* see envoy info
-```
-% envoy info
-Serial Number:  xxx
-Part Number:  800-00555-r03
-Software Version:  R4.10.35
+> envoy now  
+🔌Production: 59.43W / 2354W    Consumption: 1689.83W   Net import: 1630.40W
 ```
 
-* Tested only with IQ Combiner as that's what I have.
+## Installation
 
-* the endpoints I am requesting are open, but this might be useful
-https://thecomputerperson.wordpress.com/2016/08/03/enphase-envoy-s-data-scraping/
-https://thecomputerperson.wordpress.com/2016/08/28/reverse-engineering-the-enphase-installer-toolkit/
-
-# Building
-* Requires go1.15 or newer.
+git clone the repo and type:
 ```
-% go build -o envoy cmd/envoy/main.go
+make
+make install
 ```
 
-# TO DO
-This does what I need, if there are features you'd like, please let me know
+## Configuration
+
+Copy `envoy.toml` to `/etc/envoy.toml` and set the correct value in it. The `static` option should be set to
+the path where the tool data has been installed (usually in `/usr/local/share/envoy`).
+
+Copy the `envoy.service` file to systemd:
+```
+cp envoy.service /etc/systemd/system/envoy.service
+systemctl daemon-reload
+```
+
+# Start
+The service can now be enable and started
+
+```
+systemctl enable --now envoy.service
+```
