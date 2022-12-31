@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/envoy_web -c /etc/envoy.toml
+ExecStart=/usr/bin/envoy_web -c /etc/envoy.toml
 Restart=always
 
 [Install]
