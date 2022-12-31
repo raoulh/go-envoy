@@ -7,6 +7,8 @@ After=network.target
 Type=simple
 ExecStart=/usr/bin/envoy_web -c /etc/envoy.toml
 Restart=always
+User=root
+Environment=HOME=%h
 
 [Install]
 WantedBy=multi-user.target
