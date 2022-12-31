@@ -70,9 +70,19 @@ cp envoy.service /etc/systemd/system/envoy.service
 systemctl daemon-reload
 ```
 
-# Start
+## Start
 The service can now be enable and started
 
 ```
 systemctl enable --now envoy.service
+```
+
+## Endpoints
+
+Those endpoints are available as json
+
+``` 
+http://127.0.0.1:8000/api/production
+http://127.0.0.1:8000/api/inventory
+http://127.0.0.1:8000/api/inverters
 ```
