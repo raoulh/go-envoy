@@ -4,8 +4,8 @@ port = 8000
 address = "0.0.0.0"
 
 #path to static html files
-static = "../../web"
-#static = "/usr/local/share/envoy"
+#static = "../../web"
+static = "/usr/local/share/envoy"
 
 [log]
 # default is used for all unspecified module level
